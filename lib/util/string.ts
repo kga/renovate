@@ -23,3 +23,11 @@ export function replaceAt(
     content.substr(index + oldString.length)
   );
 }
+
+export function camelCase(input: string): string {
+  return input
+    .replace(/(?:^\w|[A-Z]|\b\w)/g, (char, index) => {
+      return index === 0 ? char.toLowerCase() : char.toUpperCase();
+    })
+    .replace(/-/g, '');
+}

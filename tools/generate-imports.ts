@@ -1,6 +1,8 @@
 import fs from 'fs-extra';
 import shell from 'shelljs';
 
+import { camelCase } from '../lib/util/string';
+
 shell.echo('generating imports');
 const newFiles = new Set();
 
@@ -23,14 +25,6 @@ async function updateFile(file: string, code: string): Promise<void> {
     await fs.writeFile(file, code);
   }
   newFiles.add(file);
-}
-
-function camelCase(input: string) {
-  return input
-    .replace(/(?:^\w|[A-Z]|\b\w)/g, function (char, index) {
-      return index === 0 ? char.toLowerCase() : char.toUpperCase();
-    })
-    .replace(/-/g, '');
 }
 
 async function generate({

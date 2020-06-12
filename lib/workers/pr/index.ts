@@ -8,6 +8,7 @@ import {
 import { logger } from '../../logger';
 import { PlatformPrOptions, Pr, platform } from '../../platform';
 import { BranchStatus } from '../../types';
+import { sampleSize } from '../../util';
 import { BranchConfig, PrResult } from '../common';
 import { getPrBody } from './body';
 import { ChangeLogError } from './changelog';
@@ -521,20 +522,4 @@ export async function checkAutoMerge(
   }
   logger.debug('No automerge');
   return false;
-}
-
-function sampleSize(array: string[], n: number) {
-  const length = array == null ? 0 : array.length;
-  if (!length || n < 1) {
-    return [];
-  }
-  n = n > length ? length : n;
-  let index = -1;
-  const lastIndex = length - 1;
-  const result = [...array];
-  while (++index < n) {
-    const rand = index + Math.floor(Math.random() * (lastIndex - index + 1));
-    [result[rand], result[index]] = [result[index], result[rand]];
-  }
-  return result.slice(0, n);
 }
