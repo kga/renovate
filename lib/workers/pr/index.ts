@@ -1,5 +1,3 @@
-import sampleSize from 'lodash/sampleSize';
-import uniq from 'lodash/uniq';
 import { RenovateConfig } from '../../config/common';
 import {
   PLATFORM_FAILURE,
@@ -27,7 +25,7 @@ async function addCodeOwners(
   assigneesOrReviewers: string[],
   pr: Pr
 ): Promise<string[]> {
-  return uniq(assigneesOrReviewers.concat(await codeOwnersForPr(pr)));
+  return [...new Set(assigneesOrReviewers.concat(await codeOwnersForPr(pr)))];
 }
 
 export async function addAssigneesReviewers(
@@ -69,7 +67,7 @@ export async function addAssigneesReviewers(
         const additionalReviewers = config.additionalReviewers.map(
           noLeadingAtSymbol
         );
-        reviewers = uniq(reviewers.concat(additionalReviewers));
+        reviewers = [...new Set(reviewers.concat(additionalReviewers))];
       }
       if (config.reviewersSampleSize !== null) {
         reviewers = sampleSize(reviewers, config.reviewersSampleSize);
@@ -523,4 +521,20 @@ export async function checkAutoMerge(
   }
   logger.debug('No automerge');
   return false;
+}
+
+function sampleSize(array: string[], n: number) {
+  const length = array == null ? 0 : array.length;
+  if (!length || n < 1) {
+    return [];
+  }
+  n = n > length ? length : n;
+  let index = -1;
+  const lastIndex = length - 1;
+  const result = [...array];
+  while (++index < n) {
+    const rand = index + Math.floor(Math.random() * (lastIndex - index + 1));
+    [result[rand], result[index]] = [result[index], result[rand]];
+  }
+  return result.slice(0, n);
 }

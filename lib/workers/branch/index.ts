@@ -1,5 +1,4 @@
 import is from '@sindresorhus/is';
-import { concat } from 'lodash';
 import { DateTime } from 'luxon';
 import minimatch from 'minimatch';
 import { RenovateConfig } from '../../config';
@@ -344,8 +343,7 @@ export async function processBranch(
 
       if (is.nonEmptyArray(commands)) {
         // Persist updated files in file system so any executed commands can see them
-        for (const file of concat(
-          config.updatedPackageFiles,
+        for (const file of config.updatedPackageFiles.concat(
           config.updatedArtifacts
         )) {
           if (file.name !== '|delete|') {
